@@ -41,10 +41,13 @@ namespace Tickets.Controllers
             }
 
             var claims = new[]
-            {
-        new Claim(ClaimTypes.Name, usuario.Nombre),
-        new Claim(ClaimTypes.Role, usuario.Rol)
-    };
+ {
+    new Claim(ClaimTypes.Name, usuario.Nombre),
+
+    new Claim(ClaimTypes.Role, usuario.Rol),
+
+    new Claim("UsuarioId", usuario.Id.ToString())
+};
 
             var key = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -61,7 +64,14 @@ namespace Tickets.Controllers
 
             return Ok(new
             {
-                token = new JwtSecurityTokenHandler().WriteToken(token)
+                token = new JwtSecurityTokenHandler()
+        .WriteToken(token),
+
+                rol = usuario.Rol,
+
+                nombre = usuario.Nombre,
+
+                usuarioId = usuario.Id
             });
         }
     }

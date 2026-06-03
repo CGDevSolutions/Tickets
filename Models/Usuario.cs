@@ -12,6 +12,8 @@
 
         public string Rol { get; set; }
 
+        public string? Departamento { get; set; }
+
         public bool Activo { get; set; } = true;
 
         public string NumeroEmpleado { get; set; }

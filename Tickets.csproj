@@ -7,13 +7,22 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Content Remove="wwwroot\Uploads\f6184064-f910-4ddc-b78e-26dac858722f.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MailKit" Version="4.17.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.8">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="wwwroot\Uploads\f6184064-f910-4ddc-b78e-26dac858722f.png" />
 	</ItemGroup>
 
 </Project>

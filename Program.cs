@@ -1,12 +1,35 @@
-using Microsoft.EntityFrameworkCore;
-using Tickets.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Tickets.Data;
+using Tickets.Services;
+using Tickets.Servicios;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Controllers
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<LogService>();
+builder.Services.AddScoped<AuditoriaService>();
+
+
+builder.Services.AddScoped<CorreoService>();
+
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen();
+
+// Base de datos
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("Conexion")
+    ));
+
+// JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
@@ -28,52 +51,42 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
 });
 
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("React",
         policy =>
         {
-            policy.AllowAnyOrigin()
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
+            policy
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
         });
 });
-
-builder.Services.AddEndpointsApiExplorer();
-
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("Conexion")
-    ));
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("NuevaPolitica",
-        app =>
-        {
-            app.AllowAnyOrigin()
-               .AllowAnyHeader()
-               .AllowAnyMethod();
-        });
-});
-
 
 var app = builder.Build();
 
+// Swagger
 app.UseSwagger();
 
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+// IMPORTANTE:
+// NO usar HTTPS para pruebas en red local
+// app.UseHttpsRedirection();
 
-app.UseCors("NuevaPolitica");
-
-app.UseAuthentication();
+// CORS
 app.UseCors("React");
+
+// PUBLICAR ARCHIVOS
+app.UseStaticFiles();
+
+// Authentication
+app.UseAuthentication();
+
 app.UseAuthorization();
 
+// Controllers
 app.MapControllers();
 
 app.Run();
